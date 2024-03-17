@@ -24,25 +24,24 @@ original_square = np.array([
     [0, 0]  # Closing point to complete the square
 ])
 
-# Take input from the user for horizontal shear factor
+
 horizontal_shear_factor = float(input("Enter the horizontal shear factor: "))
 
-# Take input from the user for vertical shear factor
+
 vertical_shear_factor = float(input("Enter the vertical shear factor: "))
 
-# Apply horizontal shear
 sheared_square_horizontal = apply_horizontal_shear(original_square, horizontal_shear_factor)
 
-# Apply vertical shear
+
 sheared_square_vertical = apply_vertical_shear(original_square, vertical_shear_factor)
 
 # Plot the original square
 plt.plot(original_square[:, 0], original_square[:, 1], 'b-', label='Original Square')
 
-# Plot the horizontally sheared square
+
 plt.plot(sheared_square_horizontal[:, 0], sheared_square_horizontal[:, 1], 'r-', label='Horizontal Shear')
 
-# Plot the vertically sheared square
+
 plt.plot(sheared_square_vertical[:, 0], sheared_square_vertical[:, 1], 'g-', label='Vertical Shear')
 
 plt.xlabel('X')
