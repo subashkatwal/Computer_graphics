@@ -32,7 +32,6 @@ vertical_shear_factor = float(input("Enter the vertical shear factor: "))
 
 sheared_square_horizontal = apply_horizontal_shear(original_square, horizontal_shear_factor)
 
-
 sheared_square_vertical = apply_vertical_shear(original_square, vertical_shear_factor)
 
 # Plot the original square
