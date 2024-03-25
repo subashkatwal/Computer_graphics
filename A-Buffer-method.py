@@ -65,13 +65,11 @@
 # abuffer.add_pixel(10, 20, 0.3, (0, 255, 0))  # Update with a green pixel (lower depth)
 # abuffer.add_pixel(15, 25, 0.8, (0, 0, 255))  # Add another pixel
 # abuffer.add_pixel(10, 20, 0.2, (255, 255, 0))  # Update with a yellow pixel (even lower depth)
-
 # # Plot the A-buffer
 # abuffer.plot_buffer()
-
-
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.patches import Polygon
 
 class ABufferRenderer:
     def __init__(self, width, height):
@@ -114,9 +112,6 @@ renderer.set_fragment(300, 100, 0.7, [0, 0, 1])  # Blue
 renderer.render()
 
 
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.patches import Polygon
 
 class ABufferRenderer:
     def __init__(self, width, height):
