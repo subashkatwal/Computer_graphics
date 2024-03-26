@@ -1,42 +1,71 @@
+
 import numpy as np
 import matplotlib.pyplot as plt
 
-class ABufferRenderer:
-    def __init__(self, width, height):
-        self.width = width
-        self.height = height
-        self.color_buffer = np.zeros((height, width, 3))  # RGB color buffer
-        self.depth_buffer = np.full((height, width), np.inf)  # Depth buffer initialized with infinity
+# Define constants
+WIDTH = 800
+HEIGHT = 600
 
-    def clear_buffers(self):
-        self.color_buffer.fill(0)  # Clear color buffer
-        self.depth_buffer.fill(np.inf)  # Clear depth buffer
+# Function to initialize the A-buffer
+def initialize_abuffer(width, height):
+    abuffer = [[[] for _ in range(width)] for _ in range(height)]
+    return abuffer
 
-    def set_fragment(self, x, y, depth, color):
-        if 0 <= x < self.width and 0 <= y < self.height:
-            if depth < self.depth_buffer[y, x]:
-                self.depth_buffer[y, x] = depth
-                self.color_buffer[y, x] = color
+# Function to update A-buffer with a new fragment
+def update_abuffer(abuffer, x, y, depth, color):
+    if 0 <= x < WIDTH and 0 <= y < HEIGHT:
+        if not abuffer[y][x] or depth < abuffer[y][x][0]:
+            abuffer[y][x] = [depth, color]
+    return abuffer
 
-    def render(self):
-        # Check if depth buffer contains valid values
-        if np.isnan(np.min(self.depth_buffer)) or np.isnan(np.max(self.depth_buffer)):
-            print("Invalid depth values in the depth buffer. Rendering aborted.")
-            return
+# Function to composite final image from A-buffer
+def composite_abuffer(abuffer):
+    image = np.zeros((HEIGHT, WIDTH, 3))
+    for y in range(HEIGHT):
+        for x in range(WIDTH):
+            if abuffer[y][x]:
+                image[y, x] = abuffer[y][x][1]
+    return image
 
-        plt.imshow(self.color_buffer, origin='lower')
-        plt.title("A-Buffer Rendering")
-        plt.axis('off')
-        plt.show()
+# Function to render a simple 2D scene
+def render_scene():
+    abuffer = initialize_abuffer(WIDTH, HEIGHT)
+    
+    # Render a red rectangle
+    for y in range(200, 400):
+        for x in range(200, 400):
+            depth = 0.5  # Arbitrary depth value
+            color = [0.7, 0.7, 0.7]  # Red color
+            abuffer = update_abuffer(abuffer, x, y, depth, color)
+    
+    # Render a green circle with a white border
+    center_x = 400
+    center_y = 300
+    radius = 100
+    border_width = 2
+    
+    for y in range(HEIGHT):
+        for x in range(WIDTH):
+            distance_to_center = ((x - center_x) ** 2 + (y - center_y) ** 2) ** 0.5
+            if (radius - border_width <= distance_to_center <= radius) and (distance_to_center >= radius - border_width):
+                depth = 0.4  # Arbitrary depth value
+                if distance_to_center < radius:
+                    color = [0.0, 1.0, 0.0]  # Green color for the circle
+                else:
+                    color = [1.0, 1.0, 1.0]  # White color for the border
+                abuffer = update_abuffer(abuffer, x, y, depth, color)
+    
+    # Composite final image
+    image = composite_abuffer(abuffer)
+    
+    return image
 
-# Example usage
-renderer = ABufferRenderer(400, 300)
-renderer.clear_buffers()
+# Main function
+def main():
+    image = render_scene()
+    plt.imshow(image)
+    plt.axis('off')
+    plt.show()
 
-# Draw a triangle with varying depths
-renderer.set_fragment(100, 100, 0.5, [1, 0, 0])  # Red
-renderer.set_fragment(200, 200, 0.3, [0, 1, 0])  # Green
-renderer.set_fragment(300, 100, 0.7, [0, 0, 1])  # Blue
-
-# Render the image
-renderer.render()
+if __name__ == "__main__":
+    main()
